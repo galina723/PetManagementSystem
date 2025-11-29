@@ -78,14 +78,12 @@ public class Main {
         } while (!service.validateName(name));
 
         int age = -1;
-        while (age < 0) {
-            System.out.print("Enter pet's age (>=0): ");
 
-            String ageStr = sc.nextLine();
+        System.out.print("Enter pet's age (>=0): ");
 
-            age = Integer.parseInt(ageStr);
+        String ageStr = sc.nextLine();
 
-        }
+        age = Integer.parseInt(ageStr);
 
         String type;
         do {
