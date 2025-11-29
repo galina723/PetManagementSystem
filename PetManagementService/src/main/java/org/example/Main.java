@@ -116,24 +116,17 @@ public class Main {
         if (!name.isEmpty())
             existing.setName(name);
 
-        System.out.print("New age (Can use Enter button for skip): ");
+        System.out.println("New age (Can use Enter button for skip): ");
         int age = -1;
-        while (age < 0) {
-            System.out.print("New age (Can use Enter button for skip): ");
-            try {
-                age = Integer.parseInt(sc.nextLine());
-                if (age < 0)
-                    System.out.println("Age must be equal or more than 0.");
-            } catch (Exception e) {
-                System.out.println("Please enter an integer number");
-            }
+        String ageInput = sc.nextLine().trim();
+        if (!ageInput.isEmpty()) {
+            existing.setAge(Integer.parseInt(ageInput));
         }
 
         System.out.print("New type (Can use Enter button for skip): ");
         String type = sc.nextLine().trim();
         if (!type.isEmpty())
             existing.setType(type);
-
         System.out.println("Update successful");
     }
 
