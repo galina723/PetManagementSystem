@@ -59,4 +59,25 @@ public class PetService {
         pets.forEach(System.out::println);
         System.out.println("Total pets: " + count());
     }
+
+    public boolean validateId(String id) {
+        return id != null && !id.trim().isEmpty();
+    }
+
+    public boolean validateName(String name) {
+        return name != null && !name.trim().isEmpty();
+    }
+
+    public boolean validateType(String type) {
+        return type != null && !type.trim().isEmpty();
+    }
+
+    public boolean validateAgeFormat(String ageStr) {
+        try {
+            Integer.parseInt(ageStr);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

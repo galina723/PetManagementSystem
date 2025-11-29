@@ -6,9 +6,10 @@ import org.example.service.PetService;
 import java.util.Scanner;
 
 public class Main {
+    static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
         PetService service = new PetService();
-        Scanner sc = new Scanner(System.in);
 
         int choice;
 
@@ -30,16 +31,16 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    addPet(sc, service);
+                    addPet(service);
                     break;
                 case 2:
                     service.printAll();
                     break;
                 case 3:
-                    updatePet(sc, service);
+                    updatePet(service);
                     break;
                 case 4:
-                    deletePet(sc, service);
+                    deletePet(service);
                     break;
                 case 5:
                     System.out.println("Exit");
@@ -51,7 +52,7 @@ public class Main {
         } while (true);
     }
 
-    private static void addPet(Scanner sc, PetService service) {
+    private static void addPet(PetService service) {
         System.out.println("\nAdd pet");
 
         String id;
@@ -60,39 +61,40 @@ public class Main {
 
             id = sc.nextLine().trim();
 
-            if (id.isEmpty())
+            if (!service.validateId(id))
                 System.out.println("Id must not be blank.");
+
             if (service.getById(id) != null)
                 System.out.println("Id already exists.");
-        } while (id.isEmpty() || service.getById(id) != null);
+        } while (!service.validateId(id) || service.getById(id) != null);
 
         String name;
         do {
             System.out.print("Enter pet's name: ");
             name = sc.nextLine().trim();
-            if (name.isEmpty())
+
+            if (!service.validateName(name))
                 System.out.println("Name must not be blank");
-        } while (name.isEmpty());
+        } while (!service.validateName(name));
 
         int age = -1;
         while (age < 0) {
             System.out.print("Enter pet's age (>=0): ");
-            try {
-                age = Integer.parseInt(sc.nextLine());
-                if (age < 0)
-                    System.out.println("Age must be equal or more than 0.");
-            } catch (Exception e) {
-                System.out.println("Please enter an integer number");
-            }
+
+            String ageStr = sc.nextLine();
+
+            age = Integer.parseInt(ageStr);
+
         }
 
         String type;
         do {
             System.out.print("Enter type of pet: ");
             type = sc.nextLine().trim();
-            if (type.isEmpty())
+
+            if (!service.validateType(type))
                 System.out.println("Type must not be blank.");
-        } while (type.isEmpty());
+        } while (!service.validateType(type));
 
         Pet pet = new Pet(id, name, age, type);
         service.addPet(pet);
@@ -100,7 +102,7 @@ public class Main {
         System.out.println("Add successful.");
     }
 
-    private static void updatePet(Scanner sc, PetService service) {
+    private static void updatePet(PetService service) {
         System.out.println("\nUpdate pet");
         System.out.print("Enter pet's id: ");
         String id = sc.nextLine().trim();
@@ -113,24 +115,32 @@ public class Main {
 
         System.out.print("New name (Can use Enter button for skip): ");
         String name = sc.nextLine().trim();
-        if (!name.isEmpty())
+        if (!name.isEmpty() && service.validateName(name))
             existing.setName(name);
 
         System.out.print("New age (Can use Enter button for skip): ");
-        int age = -1;
-        String ageInput = sc.nextLine().trim();
-        if (!ageInput.isEmpty()) {
-            existing.setAge(Integer.parseInt(ageInput));
+        String ageStr = sc.nextLine().trim();
+
+        if (!ageStr.isEmpty()) {
+            if (!service.validateAgeFormat(ageStr)) {
+                System.out.println("Please enter an integer number");
+            } else {
+                int age = Integer.parseInt(ageStr);
+                existing.setAge(age);
+
+            }
         }
 
         System.out.print("New type (Can use Enter button for skip): ");
+
         String type = sc.nextLine().trim();
-        if (!type.isEmpty())
+        if (!type.isEmpty() && service.validateType(type))
             existing.setType(type);
+
         System.out.println("Update successful");
     }
 
-    private static void deletePet(Scanner sc, PetService service) {
+    private static void deletePet(PetService service) {
         System.out.println("\nDelete pet");
         System.out.print("Enter pet's id: ");
         String id = sc.nextLine().trim();
