@@ -116,7 +116,7 @@ public class Main {
         if (!name.isEmpty())
             existing.setName(name);
 
-        System.out.println("New age (Can use Enter button for skip): ");
+        System.out.print("New age (Can use Enter button for skip): ");
         int age = -1;
         String ageInput = sc.nextLine().trim();
         if (!ageInput.isEmpty()) {
