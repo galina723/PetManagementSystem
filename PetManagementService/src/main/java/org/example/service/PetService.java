@@ -1,36 +1,29 @@
 package org.example.service;
 
 import org.example.model.Pet;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.example.repository.PetRepository;
 
 public class PetService {
 
-    private final List<Pet> pets = new ArrayList<>();
+    private PetRepository repo = new PetRepository();
 
-    public boolean addPet(Pet pet) {
-        if (exists(pet.getId())) {
-            System.out.println("Pet ID already exists!");
-            return false;
-        }
-        pets.add(pet);
-        return true;
+    public PetService(PetRepository repo) {
+        this.repo = repo;
     }
 
-    public boolean exists(String id) {
-        return getById(id) != null;
+    public boolean addPet(Pet pet) {
+        if (repo.findById(pet.getId()) != null) {
+            return false;
+        }
+        return repo.save(pet);
     }
 
     public Pet getById(String id) {
-        return pets.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        return repo.findById(id);
     }
 
     public boolean updatePet(String id, String name, int age, String type) {
-        Pet existing = getById(id);
+        Pet existing = repo.findById(id);
         if (existing == null)
             return false;
 
@@ -41,25 +34,29 @@ public class PetService {
     }
 
     public boolean deletePet(String id) {
-        if (!exists(id))
+        if (repo.findById(id) == null)
             return false;
-        return pets.removeIf(p -> p.getId().equals(id));
+
+        return repo.delete(id);
     }
 
     public int count() {
-        return pets.size();
+        return repo.count();
     }
 
     public void printAll() {
-        if (pets.isEmpty()) {
+        if (repo.count() == 0) {
             System.out.println("Pet list is empty.");
             return;
         }
 
-        pets.forEach(System.out::println);
-        System.out.println("Total pets: " + count());
+        repo.findAll().forEach(System.out::println);
+        System.out.println("Total pets: " + repo.count());
     }
 
+    // ===========================
+    // Validation
+    // ===========================
     public boolean validateId(String id) {
         return id != null && !id.trim().isEmpty();
     }

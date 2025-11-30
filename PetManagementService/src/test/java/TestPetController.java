@@ -1,8 +1,8 @@
 import org.example.model.Pet;
+import org.example.repository.PetRepository;
 import org.example.service.PetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPetController {
@@ -11,7 +11,7 @@ public class TestPetController {
 
     @BeforeEach
     void setup() {
-        service = new PetService();
+        service = new PetService(new PetRepository());
     }
 
     @Test
